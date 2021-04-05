@@ -1,7 +1,7 @@
 /*
 Object oriented programming project work
-
-Lassi Laukkarinen, Akseli Hulkkonen, Tommmi Paakkunainen
+testimuutos
+Lassi Laukkarinen, Akseli Hulkkonen, Tommi Paakkunainen
 */
 
 package com.example.olio_project;
