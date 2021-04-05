@@ -1,6 +1,6 @@
 /*
 Object oriented programming project work
-testimuutos
+testimuutos2
 Lassi Laukkarinen, Akseli Hulkkonen, Tommi Paakkunainen
 */
 
