@@ -1,7 +1,7 @@
 /*
 Object oriented programming project work
-testimuutos2
-Lassi Laukkarinen, Akseli Hulkkonen, Tommi Paakkunainen
+
+Lassi Laukkarinen, Akseli Hulkkonen, Tommmi Paakkunainen
 */
 
 package com.example.olio_project;
@@ -18,7 +18,3 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 }
-
-
-
-
