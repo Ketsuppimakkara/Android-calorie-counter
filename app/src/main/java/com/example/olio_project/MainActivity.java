@@ -1,6 +1,7 @@
 /*
 Object oriented programming project work
 
+testaus Akseli
 Lassi Laukkarinen, Akseli Hulkkonen, Tommmi Paakkunainen
 */
 
