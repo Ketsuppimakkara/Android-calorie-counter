@@ -1,15 +1,19 @@
 package com.example.olio_project;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 public class DataEntry {
     private double dairyEmissions;
     private double meatEmissions;
     private double plantEmissions;
 
-    private LocalDate entryDate;
 
-    public DataEntry(double dairy, double meat, double plant, LocalDate date){
+    private LocalDateTime entryDate;
+
+    public DataEntry(double dairy, double meat, double plant, LocalDateTime date){
         dairyEmissions = dairy;
         meatEmissions = meat;
         plantEmissions = plant;

@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    ApiStatistics apiStatistics;
+    UserData userData;
 
     @RequiresApi(api = Build.VERSION_CODES.O)                                                       // updateEmissionUrl required newer api, check if this is problem
     @Override
@@ -33,15 +33,12 @@ public class MainActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
 
         // Program
-        if(apiStatistics == null){
-            apiStatistics = new ApiStatistics();
-        }
-        else{
-            //Load apiStatistics from file
-        }
+
+        User user = new User("Ketsuppimakkara","1234");           //Replace with loading user from file, if file doesn't exist, create new file
+
 
         try {
-            apiStatistics.addNewEmissionEntry(300,150,100);
+            user.userData.addNewEmissionEntry(300,150,100);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
