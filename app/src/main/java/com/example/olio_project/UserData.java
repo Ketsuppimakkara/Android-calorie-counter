@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class UserData {
+public class UserData implements Serializable {
 
     private ArrayList<Week> weekList = new ArrayList<Week>();
 
