@@ -79,14 +79,21 @@ public class LoginActivity extends AppCompatActivity {
 
     public void addNewUser(View v){
 
-        System.out.println(usernameField.getText().length());
-        if(usernameField.getText().length() != 0 && passwordField.getText().length() != 0) {
+        if(usernameField.getText().length() != 0 && passwordField.getText().length() != 0) {                                    //Check if user has inputted anything into both fields
             User newUser = new User(usernameField.getText().toString(), passwordField.getText().toString());
+            for (int i = 0; i < userList.size(); i++) {
+                if(userList.get(i).userName.equals(newUser.userName) == true){
+                    System.out.println("Username already exists! Password in case you forgot: "+userList.get(i).password);
+                    Toast.makeText(this,"Username already exists!",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             userList.add(newUser);
             writeUserListToFile(userList);
+            Toast.makeText(this,"New user added!",Toast.LENGTH_SHORT).show();
         }
         else{
-            System.out.println("Salasana tai käyttäjänimi on tyhjä!");
+            System.out.println("Username or password cannot be empty!");
             Toast.makeText(this,"Username or password cannot be empty!",Toast.LENGTH_SHORT).show();
         }
     }
