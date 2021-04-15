@@ -1,16 +1,19 @@
 package com.example.olio_project;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -25,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
@@ -35,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText usernameField;
     EditText passwordField;
     Button newUserButton;
+
 
 
     @Override
@@ -50,8 +55,18 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDate getThisWeeksMonday(){
+        LocalDate thisWeeksMonday = LocalDate.now();
+
+        while(thisWeeksMonday.getDayOfWeek().toString() != "MONDAY"){
+            thisWeeksMonday = thisWeeksMonday.minusDays(1);
+        }
+        return (thisWeeksMonday);
+    }
+
     public void login(View v){
-        if(userList.size() == 1){
+        if(userList.size() == 0){
             System.out.println("Userlist size="+userList.size());
             Toast.makeText(context,"No users exist, create a new user!", Toast.LENGTH_SHORT).show();
         }
@@ -61,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(userList.get(i).userName.equals(usernameField.getText().toString()) == true && userList.get(i).password.equals(passwordField.getText().toString()) == true){
                     Intent intent = new Intent(this, MainActivity.class);
+                    intent.putExtra("Index",i);
                     startActivity(intent);
                     break;
                 }
@@ -164,6 +180,8 @@ public class LoginActivity extends AppCompatActivity {
         catch(IOException e){
             Log.e("IOException","Error in input");
         }
-
+    }
+    public ArrayList<User> getUserList(){
+        return userList;
     }
 }

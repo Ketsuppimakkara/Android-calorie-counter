@@ -20,6 +20,8 @@ public class DataEntry {
         entryDate = date;
     }
 
+
+
     public double getMeatEmissions() {
         return meatEmissions;
     }
