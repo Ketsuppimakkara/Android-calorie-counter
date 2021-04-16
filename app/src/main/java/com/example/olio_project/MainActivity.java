@@ -25,12 +25,18 @@ import org.json.JSONException;
 import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 
 public class MainActivity extends LoginActivity {
@@ -65,7 +71,8 @@ public class MainActivity extends LoginActivity {
         try {
             DataEntry emissionData = user.userData.createNewEmissionEntry(1000,200,3000); //TODO go through createNewEmissionentry and make it so that weeklist is handled here instead
             user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).addDataEntryToDay(emissionData);
-            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString()+" MeatEmissions for new entry: "+user.userData.getWeekList().get(0).getDay(3).getEntries().get(0).getMeatEmissions());
+            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString()+" MeatEmissions for new entry: "+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()).getEntries().get(0).getMeatEmissions());
+            saveWeekListToFile();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -76,6 +83,60 @@ public class MainActivity extends LoginActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void printEmissionData(View v){
         emissions.setText((int) user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).getDaysEmissions()+"");
+    }
+
+    public void readWeekListFromFile(View v){
+        try{
+                try {
+                    FileInputStream fis = context.openFileInput(user.userName+"_Log.txt");
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    Object object = ois.readObject();
+                    if (object != null) {
+                        user.userData.setWeekList((ArrayList<Week>)object);
+                        //System.out.println("User found! Emissions from today: "+user.userData.getWeekList().get(0).getDay(4).getDaysEmissions());
+                    } else {
+
+                    }
+                    ois.close();
+                    fis.close();
+                }
+                catch (EOFException e){
+                    System.out.println("File read! Found users:");
+                    for (int i = 0; i < userList.size(); i++) {
+                        System.out.println(userList.get(i).userName);
+                    }
+
+                }
+
+        }
+        //Do this if no file exists
+        catch(FileNotFoundException e){
+            Log.e("FileNotFoundException","File not found, creating a new file!");
+            saveWeekListToFile();
+        }
+        catch(IOException e){
+            Log.e("IOException",e.toString());
+        } catch (ClassNotFoundException e) {
+            Log.e("IOException","Class not found");
+        }
+
+    }
+
+    public void saveWeekListToFile(){
+        try {
+            FileOutputStream fos = getApplicationContext().openFileOutput(user.userName+"_Log.txt", Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(user.userData.getWeekList());
+                System.out.println("Wrote weeklist to user'sfile.");
+            oos.close();
+            fos.close();
+        }
+        catch(FileNotFoundException e){
+            Log.e("FileNotFoundException","File not found");
+        }
+        catch(IOException e){
+            Log.e("IOException","Error in input");
+        }
     }
 
 }

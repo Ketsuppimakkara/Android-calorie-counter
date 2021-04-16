@@ -17,10 +17,11 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class UserList extends LoginActivity {
+public class UserList extends LoginActivity implements Serializable {
 
     Context context = this;
     private ArrayList<User> userList = new ArrayList<User>();

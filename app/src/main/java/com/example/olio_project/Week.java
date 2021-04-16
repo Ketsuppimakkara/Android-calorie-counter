@@ -5,12 +5,13 @@ import android.provider.ContactsContract;
 
 import androidx.annotation.RequiresApi;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Week {
+public class Week implements Serializable {
 
     private LocalDate weekStartDate;                                             //User has a single UserData, UserData has a list of Weeks, each Week has a list of Days, each Day has a list of DataEntries
     private ArrayList<Day> days;

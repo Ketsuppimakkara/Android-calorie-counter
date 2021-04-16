@@ -139,7 +139,8 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
             }
-
+            ois.close();
+            fis.close();
         }
         //Do this if no file exists
         catch(FileNotFoundException e){
@@ -158,8 +159,7 @@ public class LoginActivity extends AppCompatActivity {
         } catch (ClassNotFoundException e) {
             Log.e("IOException","Class not found");
         }
-
-    }
+        }
 
     public void writeUserListToFile(ArrayList<User> writeUsers) {
         try {

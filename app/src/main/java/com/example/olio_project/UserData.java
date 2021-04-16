@@ -1,13 +1,19 @@
 package com.example.olio_project;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.health.SystemHealthManager;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -40,6 +46,11 @@ public class UserData implements Serializable {
 
     public UserData(){
         weekList = new ArrayList<Week>();
+    }
+
+    public void setWeekList(ArrayList<Week> newWeekList) {
+        weekList.clear();
+        weekList = newWeekList;
     }
 
     public ArrayList<Week> getWeekList() {

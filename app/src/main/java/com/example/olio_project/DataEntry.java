@@ -1,11 +1,12 @@
 package com.example.olio_project;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class DataEntry {
+public class DataEntry implements Serializable {
     private double dairyEmissions;
     private double meatEmissions;
     private double plantEmissions;
