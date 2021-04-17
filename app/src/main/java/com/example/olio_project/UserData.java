@@ -33,12 +33,14 @@ public class UserData implements Serializable {
     private int averageFinnishFishGramsPerDay = 86;
     private int averageFinnishPorkPoultryGramsPerDay = 143;
     private int averageFinnishDairyGramsPerDay = 543;
+    private int averageFinnishCheeseGramsPerDay = 42;
     private int averageFinnishPlantGramsPerDay = 200;
 
     private int beefGrams;
     private int fishGrams;
     private int porkPoultryGrams;
     private int dairyGrams;
+    private int cheeseGrams;
     private int plantGrams;
 
     private double beefMultiplier;
@@ -46,7 +48,9 @@ public class UserData implements Serializable {
     private double porkPoultryMultiplier;
     private double meatMultiplier;
     private double dairyMultiplier;
+    private double cheeseMultiplier;
     private double plantMultiplier;
+
 
 
 
@@ -88,7 +92,7 @@ public class UserData implements Serializable {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)                                                       // ReadXml required newer api, check if this is problem
-    public DataEntry createNewEmissionEntry(int beefInGrams, int fishInGrams, int porkPoultryInGrams, int dairyInGrams, int plantInGrams) throws IOException, JSONException {             //Update api call URL based on grams of food
+    public DataEntry createNewEmissionEntry(int beefInGrams, int fishInGrams, int porkPoultryInGrams, int dairyInGrams, int cheeseInGrams, int plantInGrams) throws IOException, JSONException {             //Update api call URL based on grams of food
         apiUrl = "https://ilmastodieetti.ymparisto.fi/ilmastodieetti/calculatorapi/v1/FoodCalculator?query.diet=omnivore";
         if(beefInGrams != 0){
             beefMultiplier = beefInGrams/(averageFinnishBeefGramsPerDay*2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
@@ -130,6 +134,16 @@ public class UserData implements Serializable {
             dairyGrams = dairyInGrams;
         }
 
+        if(cheeseInGrams != 0) {
+            cheeseMultiplier = dairyInGrams / (averageFinnishCheeseGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
+            if (cheeseMultiplier < 1) {
+                apiUrl = apiUrl + "&query.cheeseLevel=" + (int) (((float) cheeseInGrams / (float) averageFinnishCheeseGramsPerDay) * 100);
+            } else {
+                apiUrl = apiUrl + "&query.cheeseLevel=200";
+            }
+            cheeseGrams = cheeseInGrams;
+        }
+
         if(plantInGrams != 0) {
             plantMultiplier = dairyInGrams / (averageFinnishDairyGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
             if (plantMultiplier < 1) {
@@ -142,13 +156,22 @@ public class UserData implements Serializable {
 
         System.out.println(apiUrl);
         JSONObject data = JsonReader.readJsonFromUrl(apiUrl);                                       //Read ilmastodieetti's API response into a single string
+
         if(beefMultiplier > 1 || fishMultiplier > 1 || porkPoultryMultiplier > 1) {
             meatMultiplier = ((beefInGrams * beefMultiplier) + (fishInGrams * fishMultiplier) + (porkPoultryInGrams * porkPoultryMultiplier)) / (beefInGrams + fishInGrams + porkPoultryInGrams);
         }
         else{
             meatMultiplier = 1;
         }
-        double dairyEmission = ((double) data.get("Dairy")-24.6281058495822)/365;                                           // Extract floats from response. Subtract default values to only count emissions caused by food
+
+        if(dairyMultiplier > 1 || cheeseMultiplier > 1) {
+            dairyMultiplier = ((dairyInGrams * dairyMultiplier) + (cheeseInGrams * cheeseMultiplier)) / (dairyInGrams + cheeseInGrams);
+        }
+        else{
+            dairyMultiplier = 1;
+        }
+
+        double dairyEmission = ((double) data.get("Dairy")-24.6281058495822)/365*dairyMultiplier;                                           // Extract floats from response. Subtract default values to only count emissions caused by food
         double meatEmission = (((double) data.get("Meat")-33.3533426183844)/365)*meatMultiplier;                            // These also divide the data by 365 since Ilmastodieetti returns emission data for the whole year instead of one day
         double plantEmission = ((double) data.get("Plant")-340.159042085224)/365;                                           // Meatmultiplier counts a weighted average of inputted meats and calculates a multiplier to estimate emissions
         DataEntry emissionData = (new DataEntry(dairyEmission,meatEmission,plantEmission, LocalDateTime.now()));            // Create a new DataEntry with calculated emissionData.
