@@ -32,14 +32,23 @@ public class UserData implements Serializable {
     private int averageFinnishBeefGramsPerDay = 57;                                               // Used https://ilmastodieetti.ymparisto.fi/ilmastodieetti/food as source for averages
     private int averageFinnishFishGramsPerDay = 86;
     private int averageFinnishPorkPoultryGramsPerDay = 143;
+    private int averageFinnishDairyGramsPerDay = 543;
+    private int averageFinnishPlantGramsPerDay = 200;
 
     private int beefGrams;
     private int fishGrams;
     private int porkPoultryGrams;
+    private int dairyGrams;
+    private int plantGrams;
+
     private double beefMultiplier;
     private double fishMultiplier;
     private double porkPoultryMultiplier;
     private double meatMultiplier;
+    private double dairyMultiplier;
+    private double plantMultiplier;
+
+
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
 
@@ -79,10 +88,10 @@ public class UserData implements Serializable {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)                                                       // ReadXml required newer api, check if this is problem
-    public DataEntry createNewEmissionEntry(int beefInGrams, int fishInGrams, int porkPoultryInGrams) throws IOException, JSONException {             //Update api call URL based on grams of food
+    public DataEntry createNewEmissionEntry(int beefInGrams, int fishInGrams, int porkPoultryInGrams, int dairyInGrams, int plantInGrams) throws IOException, JSONException {             //Update api call URL based on grams of food
+        apiUrl = "https://ilmastodieetti.ymparisto.fi/ilmastodieetti/calculatorapi/v1/FoodCalculator?query.diet=omnivore";
         if(beefInGrams != 0){
             beefMultiplier = beefInGrams/(averageFinnishBeefGramsPerDay*2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
-            System.out.println("###########"+beefMultiplier);
             if(beefMultiplier < 1) {
                 apiUrl = apiUrl + "&query.beefLevel=" + (int) (((float) beefInGrams / (float) averageFinnishBeefGramsPerDay) * 100);
             }
@@ -111,21 +120,41 @@ public class UserData implements Serializable {
             }
             porkPoultryGrams = porkPoultryInGrams;
         }
+        if(dairyInGrams != 0) {
+            dairyMultiplier = dairyInGrams / (averageFinnishDairyGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
+            if (dairyMultiplier < 1) {
+                apiUrl = apiUrl + "&query.dairyLevel=" + (int) (((float) dairyInGrams / (float) averageFinnishDairyGramsPerDay) * 100);
+            } else {
+                apiUrl = apiUrl + "&query.dairyLevel=200";
+            }
+            dairyGrams = dairyInGrams;
+        }
+
+        if(plantInGrams != 0) {
+            plantMultiplier = dairyInGrams / (averageFinnishDairyGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
+            if (plantMultiplier < 1) {
+                apiUrl = apiUrl + "&query.plantLevel=" + (int) (((float) plantInGrams / (float) averageFinnishPlantGramsPerDay) * 100);
+            } else {
+                apiUrl = apiUrl + "&query.plantLevel=200";
+            }
+            plantGrams = plantInGrams;
+        }
 
         System.out.println(apiUrl);
         JSONObject data = JsonReader.readJsonFromUrl(apiUrl);                                       //Read ilmastodieetti's API response into a single string
         if(beefMultiplier > 1 || fishMultiplier > 1 || porkPoultryMultiplier > 1) {
             meatMultiplier = ((beefInGrams * beefMultiplier) + (fishInGrams * fishMultiplier) + (porkPoultryInGrams * porkPoultryMultiplier)) / (beefInGrams + fishInGrams + porkPoultryInGrams);
-            System.out.print("Meatmultiplier is "+meatMultiplier);
         }
         else{
             meatMultiplier = 1;
         }
         double dairyEmission = ((double) data.get("Dairy")-24.6281058495822)/365;                                           // Extract floats from response. Subtract default values to only count emissions caused by food
-        double meatEmission = (((double) data.get("Meat")-33.3533426183844)/365)*meatMultiplier;                                             // These also divide the data by 365 since Ilmastodieetti returns emission data for the whole year instead of one day
-        double plantEmission = ((double) data.get("Plant")-340.159042085224)/365;
-        DataEntry emissionData = (new DataEntry(dairyEmission,meatEmission,plantEmission, LocalDateTime.now()));          // Create a new DataEntry with calculated emissionData.
-
+        double meatEmission = (((double) data.get("Meat")-33.3533426183844)/365)*meatMultiplier;                            // These also divide the data by 365 since Ilmastodieetti returns emission data for the whole year instead of one day
+        double plantEmission = ((double) data.get("Plant")-340.159042085224)/365;                                           // Meatmultiplier counts a weighted average of inputted meats and calculates a multiplier to estimate emissions
+        DataEntry emissionData = (new DataEntry(dairyEmission,meatEmission,plantEmission, LocalDateTime.now()));            // Create a new DataEntry with calculated emissionData.
+        System.out.println("MeatEmissions from API: "+emissionData.getMeatEmissions());
+        System.out.println("DairyEmissions from API: "+emissionData.getDairyEmissions());
+        System.out.println("PlantEmissions from API: "+emissionData.getPlantEmissions());
         // ##################################################
 
 
@@ -135,7 +164,6 @@ public class UserData implements Serializable {
         }
         else{
             LocalDate current = weekList.get(weekList.size()-1).getWeekDate();
-            System.out.println("What: "+Period.between(LocalDate.now(),current));
             if(Period.between(LocalDate.now(),current).getDays() <= -7) {
                 weekList.add(weekList.size(),new Week(LocalDate.now()));                                                    //If previously logged week's monday is not current week's monday, add new week and add emission to that week
                 weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());
