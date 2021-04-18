@@ -41,7 +41,18 @@ public class UserData implements Serializable {
     private int porkPoultryGrams;
     private int dairyGrams;
     private int cheeseGrams;
+
     private int plantGrams;
+
+    private double beefCalories;
+    private double fishCalories;
+    private double porkPoultryCalories;
+    private double dairyCalories;
+    private double cheeseCalories;
+    private double riceCalories;
+    private double eggCalories;
+    private double plantCalories;
+    private int totalCalories;
 
     private double beefMultiplier;
     private double fishMultiplier;
@@ -52,12 +63,10 @@ public class UserData implements Serializable {
     private double plantMultiplier;
 
 
-
-
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
 
 
-    public UserData(){
+    public UserData() {
         weekList = new ArrayList<Week>();
     }
 
@@ -71,7 +80,7 @@ public class UserData implements Serializable {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public int getCurrentWeekIndex(){
+    public int getCurrentWeekIndex() {
         int weekIndex = 0;
         LocalDate today = LocalDate.now();
         for (int i = 0; i < 7 && LocalDate.now().getDayOfWeek().getValue() != 1; i++) {
@@ -79,52 +88,50 @@ public class UserData implements Serializable {
         }
 
         for (int i = 0; i < weekList.size(); i++) {
-            if(weekList.get(i).getWeekDate() == today){
+            if (weekList.get(i).getWeekDate() == today) {
                 weekIndex = i;
                 break;
             }
         }
-        if(weekIndex == weekList.size()){
+        if (weekIndex == weekList.size()) {
             weekList.add(new Week(LocalDate.now()));
-            weekIndex = weekList.size()-1;
+            weekIndex = weekList.size() - 1;
         }
         return weekIndex;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)                                                       // ReadXml required newer api, check if this is problem
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    // ReadXml required newer api, check if this is problem
     public DataEntry createNewEmissionEntry(int beefInGrams, int fishInGrams, int porkPoultryInGrams, int dairyInGrams, int cheeseInGrams, int plantInGrams) throws IOException, JSONException {             //Update api call URL based on grams of food
         apiUrl = "https://ilmastodieetti.ymparisto.fi/ilmastodieetti/calculatorapi/v1/FoodCalculator?query.diet=omnivore";
-        if(beefInGrams != 0){
-            beefMultiplier = beefInGrams/(averageFinnishBeefGramsPerDay*2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
-            if(beefMultiplier < 1) {
+        if (beefInGrams != 0) {
+            beefMultiplier = beefInGrams / (averageFinnishBeefGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
+            if (beefMultiplier < 1) {
                 apiUrl = apiUrl + "&query.beefLevel=" + (int) (((float) beefInGrams / (float) averageFinnishBeefGramsPerDay) * 100);
-            }
-            else{
+            } else {
                 apiUrl = apiUrl + "&query.beefLevel=200";
             }
             beefGrams = beefInGrams;
         }
-        if(fishInGrams != 0){
-            fishMultiplier = fishInGrams/(averageFinnishFishGramsPerDay*2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
-            if(fishMultiplier < 1) {
+        if (fishInGrams != 0) {
+            fishMultiplier = fishInGrams / (averageFinnishFishGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
+            if (fishMultiplier < 1) {
                 apiUrl = apiUrl + "&query.fishLevel=" + (int) (((float) fishInGrams / (float) averageFinnishFishGramsPerDay) * 100);
-            }
-            else{
+            } else {
                 apiUrl = apiUrl + "&query.fishLevel=200";
             }
             fishGrams = fishInGrams;
         }
-        if(porkPoultryInGrams != 0){
-            porkPoultryMultiplier = porkPoultryInGrams/(averageFinnishPorkPoultryGramsPerDay*2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
-            if(porkPoultryMultiplier < 1) {
+        if (porkPoultryInGrams != 0) {
+            porkPoultryMultiplier = porkPoultryInGrams / (averageFinnishPorkPoultryGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
+            if (porkPoultryMultiplier < 1) {
                 apiUrl = apiUrl + "&query.porkPoultryLevel=" + (int) (((float) porkPoultryInGrams / (float) averageFinnishPorkPoultryGramsPerDay) * 100);
-            }
-            else{
+            } else {
                 apiUrl = apiUrl + "&query.porkPoultryLevel=200";
             }
             porkPoultryGrams = porkPoultryInGrams;
         }
-        if(dairyInGrams != 0) {
+        if (dairyInGrams != 0) {
             dairyMultiplier = dairyInGrams / (averageFinnishDairyGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
             if (dairyMultiplier < 1) {
                 apiUrl = apiUrl + "&query.dairyLevel=" + (int) (((float) dairyInGrams / (float) averageFinnishDairyGramsPerDay) * 100);
@@ -134,7 +141,7 @@ public class UserData implements Serializable {
             dairyGrams = dairyInGrams;
         }
 
-        if(cheeseInGrams != 0) {
+        if (cheeseInGrams != 0) {
             cheeseMultiplier = dairyInGrams / (averageFinnishCheeseGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
             if (cheeseMultiplier < 1) {
                 apiUrl = apiUrl + "&query.cheeseLevel=" + (int) (((float) cheeseInGrams / (float) averageFinnishCheeseGramsPerDay) * 100);
@@ -144,7 +151,7 @@ public class UserData implements Serializable {
             cheeseGrams = cheeseInGrams;
         }
 
-        if(plantInGrams != 0) {
+        if (plantInGrams != 0) {
             plantMultiplier = dairyInGrams / (averageFinnishDairyGramsPerDay * 2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
             if (plantMultiplier < 1) {
                 apiUrl = apiUrl + "&query.plantLevel=" + (int) (((float) plantInGrams / (float) averageFinnishPlantGramsPerDay) * 100);
@@ -157,49 +164,81 @@ public class UserData implements Serializable {
         System.out.println(apiUrl);
         JSONObject data = JsonReader.readJsonFromUrl(apiUrl);                                       //Read ilmastodieetti's API response into a single string
 
-        if(beefMultiplier > 1 || fishMultiplier > 1 || porkPoultryMultiplier > 1) {
+        if (beefMultiplier > 1 || fishMultiplier > 1 || porkPoultryMultiplier > 1) {
             meatMultiplier = ((beefInGrams * beefMultiplier) + (fishInGrams * fishMultiplier) + (porkPoultryInGrams * porkPoultryMultiplier)) / (beefInGrams + fishInGrams + porkPoultryInGrams);
-        }
-        else{
+        } else {
             meatMultiplier = 1;
         }
 
-        if(dairyMultiplier > 1 || cheeseMultiplier > 1) {
+        if (dairyMultiplier > 1 || cheeseMultiplier > 1) {
             dairyMultiplier = ((dairyInGrams * dairyMultiplier) + (cheeseInGrams * cheeseMultiplier)) / (dairyInGrams + cheeseInGrams);
-        }
-        else{
+        } else {
             dairyMultiplier = 1;
         }
 
-        double dairyEmission = ((double) data.get("Dairy")-24.6281058495822)/365*dairyMultiplier;                                           // Extract floats from response. Subtract default values to only count emissions caused by food
-        double meatEmission = (((double) data.get("Meat")-33.3533426183844)/365)*meatMultiplier;                            // These also divide the data by 365 since Ilmastodieetti returns emission data for the whole year instead of one day
-        double plantEmission = ((double) data.get("Plant")-340.159042085224)/365;                                           // Meatmultiplier counts a weighted average of inputted meats and calculates a multiplier to estimate emissions
-        DataEntry emissionData = (new DataEntry(dairyEmission,meatEmission,plantEmission, LocalDateTime.now()));            // Create a new DataEntry with calculated emissionData.
-        System.out.println("MeatEmissions from API: "+emissionData.getMeatEmissions());
-        System.out.println("DairyEmissions from API: "+emissionData.getDairyEmissions());
-        System.out.println("PlantEmissions from API: "+emissionData.getPlantEmissions());
+        double dairyEmission = ((double) data.get("Dairy") - 24.6281058495822) / 365 * dairyMultiplier;                                           // Extract floats from response. Subtract default values to only count emissions caused by food
+        double meatEmission = (((double) data.get("Meat") - 33.3533426183844) / 365) * meatMultiplier;                            // These also divide the data by 365 since Ilmastodieetti returns emission data for the whole year instead of one day
+        double plantEmission = ((double) data.get("Plant") - 340.159042085224) / 365;                                           // Meatmultiplier counts a weighted average of inputted meats and calculates a multiplier to estimate emissions
+        DataEntry emissionData = (new DataEntry(dairyEmission, meatEmission, plantEmission, LocalDateTime.now()));            // Create a new DataEntry with calculated emissionData.
+        System.out.println("MeatEmissions from API: " + emissionData.getMeatEmissions());
+        System.out.println("DairyEmissions from API: " + emissionData.getDairyEmissions());
+        System.out.println("PlantEmissions from API: " + emissionData.getPlantEmissions());
         // ##################################################
 
 
-        if(weekList.size()==0){
-            weekList.add(0,new Week(LocalDate.now()));                                                                //If user has no weeks in log, add an empty week
-            weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());
-        }
-        else{
-            LocalDate current = weekList.get(weekList.size()-1).getWeekDate();
-            if(Period.between(LocalDate.now(),current).getDays() <= -7) {
-                weekList.add(weekList.size(),new Week(LocalDate.now()));                                                    //If previously logged week's monday is not current week's monday, add new week and add emission to that week
-                weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());
+        if (weekList.size() == 0) {
+            weekList.add(0, new Week(LocalDate.now()));                                                                //If user has no weeks in log, add an empty week
+            weekList.get(weekList.size() - 1).addEmissionData(emissionData, LocalDate.now());
+        } else {
+            LocalDate current = weekList.get(weekList.size() - 1).getWeekDate();
+            if (Period.between(LocalDate.now(), current).getDays() <= -7) {
+                weekList.add(weekList.size(), new Week(LocalDate.now()));                                                    //If previously logged week's monday is not current week's monday, add new week and add emission to that week
+                weekList.get(weekList.size() - 1).addEmissionData(emissionData, LocalDate.now());
 
+            } else {
+                weekList.get(weekList.size() - 1).addEmissionData(emissionData, LocalDate.now());                                              //If previously logged week is current week, add emission data to that week
             }
-            else {
-                weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());                                              //If previously logged week is current week, add emission data to that week
-            }
-            }
-        System.out.println("Entryjä on Nyt on "+weekList.get(weekList.size()-1).getDay(LocalDate.now().getDayOfWeek().getValue()).getEntries().size());
+        }
+        System.out.println("Entryjä on Nyt on " + weekList.get(weekList.size() - 1).getDay(LocalDate.now().getDayOfWeek().getValue()).getEntries().size());
         return emissionData;
-        }
-
-
     }
 
+
+
+
+public int calculateCalories(int beefInGrams, int fishInGrams, int porkPoultryInGrams, int dairyInGrams, int cheeseInGrams,int riceInGrams,int eggInGrams, int plantInGrams) {
+        if (beefInGrams != 0) {
+            beefCalories = beefInGrams * 2.09;
+            totalCalories += beefCalories;
+        }
+        if(fishInGrams != 0){
+            fishCalories = fishInGrams * 1.27;
+            totalCalories += fishCalories;
+        }
+        if (porkPoultryInGrams != 0){
+            porkPoultryCalories = porkPoultryInGrams * 2.16;
+            totalCalories += porkPoultryCalories;
+        }
+        if (dairyInGrams != 0){
+            dairyCalories = dairyInGrams * 0.97;
+            totalCalories += dairyCalories;
+        }
+        if (cheeseInGrams != 0){
+            cheeseCalories = cheeseInGrams * 2.72;
+            totalCalories += cheeseCalories;
+        }
+        if (riceInGrams != 0){
+            riceCalories = riceInGrams * 3.48;
+            totalCalories += riceCalories;
+        }
+        if (eggInGrams != 0){
+            eggCalories = eggInGrams * 1.34;
+            totalCalories += eggCalories;
+        }
+        if (plantInGrams != 0){
+            plantCalories = plantInGrams * 0.016;
+            totalCalories += plantCalories;
+        }
+        return totalCalories;
+    }
+}
