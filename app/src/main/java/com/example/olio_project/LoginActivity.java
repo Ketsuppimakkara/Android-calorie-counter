@@ -50,9 +50,13 @@ public class LoginActivity extends AppCompatActivity {
         usernameField = findViewById(R.id.username);
         passwordField = findViewById(R.id.password);
         newUserButton = findViewById(R.id.createUser);
-        //See if login file exists on the phone already, if not, create one.
-        readFile();
-
+        //See if login file exists on the phone already, if not, create one. NullPointerException detects corrupted data and deletes the offending file
+        try {
+            readFile();
+        }
+        catch (NullPointerException e){
+            deleteFile("users.txt");
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -136,7 +140,6 @@ public class LoginActivity extends AppCompatActivity {
                     for (int i = 0; i < userList.size(); i++) {
                         System.out.println(userList.get(i).userName);
                     }
-
                 }
             }
             ois.close();
