@@ -14,10 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OlioProject">
         <activity android:name=".ProfileActivity"></activity>
-        <activity
-            android:name=".FoodActivity"
-            android:label="@string/title_activity_food"
-            android:theme="@style/Theme.OlioProject.NoActionBar" />
+        <activity android:name=".FoodActivity" />
         <activity android:name=".GraphActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
