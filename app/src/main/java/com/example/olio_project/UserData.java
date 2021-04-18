@@ -196,7 +196,6 @@ public class UserData implements Serializable {
                 weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());                                              //If previously logged week is current week, add emission data to that week
             }
             }
-        System.out.println("Entryjä on Nyt on "+weekList.get(weekList.size()-1).getDay(LocalDate.now().getDayOfWeek().getValue()).getEntries().size());
         return emissionData;
         }
 

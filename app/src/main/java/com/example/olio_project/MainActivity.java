@@ -64,14 +64,18 @@ public class MainActivity extends LoginActivity {
         int userIndex = intent.getIntExtra("Index",0);
         user = userList.get(userIndex);
         System.out.println("Got user data! User name:"+user.userName);
+        readWeekListFromFile();
+        printEmissionData();
 
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void newEntry(View v){
         try {
+            readWeekListFromFile();
             DataEntry emissionData = user.userData.createNewEmissionEntry(1000,200,3000,5000,600,5000);
-            user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).addDataEntryToDay(emissionData);
-            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString()+" Total Emissions for new entry: "+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()).getEntries().get(0).getPlantEmissions());
+            //user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()-1).addDataEntryToDay(emissionData);
+            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString()+" Total Emissions for new entry: "+(user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getPlantEmissions()));
+            printEmissionData();
             saveWeekListToFile();
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,11 +85,11 @@ public class MainActivity extends LoginActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void printEmissionData(View v){
-        emissions.setText((int) user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).getDaysEmissions()+"");
+    public void printEmissionData(){
+        emissions.setText((int) user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getDaysEmissions()+"");
     }
 
-    public void readWeekListFromFile(View v){
+    public void readWeekListFromFile(){
         try{
                 try {
                     FileInputStream fis = context.openFileInput(user.userName+"_Log.txt");

@@ -29,13 +29,13 @@ public class Day implements Serializable {
 
     public double getDaysEmissions(){
         double dayEmissions = 0;
-
+        System.out.println("Entryjä on "+entries.size());
         for (int i = 0; i < entries.size(); i++) {
             System.out.println((i+1)+". MeatEmissions: "+entries.get(i).getMeatEmissions());
-            System.out.println((i+1)+". DairyEmissions: "+entries.get(i).getDairyEmissions());
-            System.out.println((i+1)+". PlantEmissions: "+entries.get(i).getPlantEmissions());
+            System.out.print((i+1)+". DairyEmissions: "+entries.get(i).getDairyEmissions());
+            System.out.print((i+1)+". PlantEmissions: "+entries.get(i).getPlantEmissions());
             dayEmissions = (dayEmissions+((entries.get(i).getMeatEmissions())+(entries.get(i).getPlantEmissions())+(entries.get(i).getDairyEmissions())));
-            System.out.println((i+1)+". Total emissions: "+dayEmissions);
+            System.out.print((i+1)+". Total emissions: "+dayEmissions);
         }
 
         return dayEmissions;
