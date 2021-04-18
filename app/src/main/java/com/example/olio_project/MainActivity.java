@@ -73,8 +73,8 @@ public class MainActivity extends LoginActivity {
         try {
             readWeekListFromFile();
             DataEntry emissionData = user.userData.createNewEmissionEntry(1000,200,3000,5000,600,5000);
-            //user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()-1).addDataEntryToDay(emissionData);
-            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString()+" Total Emissions for new entry: "+(user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getPlantEmissions()));
+            //user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).addDataEntryToDay(emissionData);
+            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString()+" Total Emissions for new entry: "+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getPlantEmissions());
             printEmissionData();
             saveWeekListToFile();
         } catch (IOException e) {
