@@ -51,6 +51,15 @@ public class UserData implements Serializable {
     private double cheeseMultiplier;
     private double plantMultiplier;
 
+    private double beefCalories;
+    private double fishCalories;
+    private double porkPoultryCalories;
+    private double dairyCalories;
+    private double cheeseCalories;
+    private double riceCalories;
+    private double eggCalories;
+    private double plantCalories;
+    private int totalCalories;
 
 
 
@@ -199,6 +208,41 @@ public class UserData implements Serializable {
         return emissionData;
         }
 
+    public int calculateCalories(int beefInGrams, int fishInGrams, int porkPoultryInGrams, int dairyInGrams, int cheeseInGrams,int riceInGrams,int eggInGrams, int plantInGrams) {
+        if (beefInGrams != 0) {
+            beefCalories = beefInGrams * 2.09;
+            totalCalories += beefCalories;
+        }
+        if(fishInGrams != 0){
+            fishCalories = fishInGrams * 1.27;
+            totalCalories += fishCalories;
+        }
+        if (porkPoultryInGrams != 0){
+            porkPoultryCalories = porkPoultryInGrams * 2.16;
+            totalCalories += porkPoultryCalories;
+        }
+        if (dairyInGrams != 0){
+            dairyCalories = dairyInGrams * 0.97;
+            totalCalories += dairyCalories;
+        }
+        if (cheeseInGrams != 0){
+            cheeseCalories = cheeseInGrams * 2.72;
+            totalCalories += cheeseCalories;
+        }
+        if (riceInGrams != 0){
+            riceCalories = riceInGrams * 3.48;
+            totalCalories += riceCalories;
+        }
+        if (eggInGrams != 0){
+            eggCalories = eggInGrams * 1.34;
+            totalCalories += eggCalories;
+        }
+        if (plantInGrams != 0){
+            plantCalories = plantInGrams * 0.016;
+            totalCalories += plantCalories;
+        }
+        return totalCalories;
+    }
 
     }
 
