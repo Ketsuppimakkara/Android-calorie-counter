@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -15,10 +14,8 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 
 public class GraphActivity extends AppCompatActivity {
-
     private static final String TAG = "MainActivity";
-    Button calorieButton;
-    Button emissionButton;
+
     private LineChart mChart;
 
     @Override
