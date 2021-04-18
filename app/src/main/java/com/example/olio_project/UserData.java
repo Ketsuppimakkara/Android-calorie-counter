@@ -82,14 +82,17 @@ public class UserData implements Serializable {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public int getCurrentWeekIndex(){
         int weekIndex = 0;
-        LocalDate today = LocalDate.now();
-        for (int i = 0; i < 7 && LocalDate.now().getDayOfWeek().getValue() != 1; i++) {
-            today = LocalDate.now().minusDays(1);
+        LocalDate thisWeeksMonday = LocalDate.now();
+        for (int i = 0; i < 7 && thisWeeksMonday.getDayOfWeek().toString() != "MONDAY"; i++) {
+            thisWeeksMonday = LocalDate.now().minusDays(i);
         }
-
+        System.out.println("This week's Monday is on "+thisWeeksMonday);
+        System.out.println("Weeklist's size is "+weekList.size());
         for (int i = 0; i < weekList.size(); i++) {
-            if(weekList.get(i).getWeekDate() == today){
+            System.out.println("Weeklists' "+i+". monday is on :"+weekList.get(i).getWeekDate()+"\nWe are looking for "+thisWeeksMonday);
+            if(weekList.get(i).getWeekDate().equals(thisWeeksMonday)){
                 weekIndex = i;
+                System.out.println("Found a matching week, index: "+weekIndex);
                 break;
             }
         }

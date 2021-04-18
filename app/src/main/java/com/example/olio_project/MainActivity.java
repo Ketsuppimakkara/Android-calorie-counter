@@ -36,6 +36,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 
@@ -65,9 +66,18 @@ public class MainActivity extends LoginActivity {
         user = userList.get(userIndex);
         System.out.println("Got user data! User name:"+user.userName);
         readWeekListFromFile();
-        printEmissionData();
+        try {
+            printEmissionData();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
     }
+
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void newEntry(View v){
         try {
@@ -84,9 +94,16 @@ public class MainActivity extends LoginActivity {
         }
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void printEmissionData(){
-        emissions.setText((int) user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getDaysEmissions()+"");
+    public void printEmissionData() throws IOException, JSONException {
+        double thisWeeksEmissions = 0;
+
+        for (int i = 0; i < 7; i++) {
+            thisWeeksEmissions = thisWeeksEmissions + (user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(i).getDaysEmissions());
+            System.out.println("Week's total emissions are thus far: "+thisWeeksEmissions);
+        }
+        emissions.setText(String.format("%.2f",thisWeeksEmissions)+" kg/CO2");
     }
 
     public void readWeekListFromFile(){
