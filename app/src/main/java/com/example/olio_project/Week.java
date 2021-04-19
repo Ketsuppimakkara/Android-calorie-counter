@@ -24,8 +24,6 @@ public class Week implements Serializable {
         while(weekStartDate.getDayOfWeek().toString()!="MONDAY"){
             weekStartDate = weekStartDate.minusDays(1);
         }
-        System.out.println(weekStartDate.getDayOfWeek().toString());
-
 
         days = new ArrayList<Day>();
         for (int i = 0; i < 7; i++) {
@@ -46,6 +44,7 @@ public class Week implements Serializable {
     }
 
     public Day getDay(int dayIndex){
+        System.out.println("getDay");
         return days.get(dayIndex);
     }
 
@@ -56,16 +55,8 @@ public class Week implements Serializable {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void addEmissionData(DataEntry emissionData, LocalDate date){
+        System.out.println("addEmissionData");
         Day currentDay = days.get(date.getDayOfWeek().getValue()-1);
         currentDay.addDataEntryToDay(emissionData);
-    }
-
-    public boolean isEmpty(){
-        if(days.size() == 0){
-            return true;
-        }
-        else{
-            return false;
-        }
     }
 }
