@@ -71,26 +71,22 @@ public class UserData implements Serializable {
     }
 
     public void setWeekList(ArrayList<Week> newWeekList) {
-        System.out.println("setWeeklist");
-        if(weekList != null) {
-            weekList.clear();
-        }
+        weekList.clear();
         weekList = newWeekList;
     }
 
     public ArrayList<Week> getWeekList() {
-        System.out.println("getWeekList");
         return weekList;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public int getCurrentWeekIndex(){
-        System.out.println("getCurrentWeekIndex");
         int weekIndex = 0;
         LocalDate thisWeeksMonday = LocalDate.now();
         for (int i = 0; i < 7 && thisWeeksMonday.getDayOfWeek().toString() != "MONDAY"; i++) {
-            thisWeeksMonday = thisWeeksMonday.minusDays(i);
+            thisWeeksMonday = LocalDate.now().minusDays(i);
         }
+        System.out.println("This week's Monday is on "+thisWeeksMonday);
         System.out.println("Weeklist's size is "+weekList.size());
         for (int i = 0; i < weekList.size(); i++) {
             System.out.println("Weeklists' "+i+". monday is on :"+weekList.get(i).getWeekDate()+"\nWe are looking for "+thisWeeksMonday);
@@ -100,12 +96,15 @@ public class UserData implements Serializable {
                 break;
             }
         }
+        if(weekIndex == weekList.size()){
+            weekList.add(new Week(LocalDate.now()));
+            weekIndex = weekList.size()-1;
+        }
         return weekIndex;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)                                                       // ReadXml required newer api, check if this is problem
     public DataEntry createNewEmissionEntry(int beefInGrams, int fishInGrams, int porkPoultryInGrams, int dairyInGrams, int cheeseInGrams, int plantInGrams) throws IOException, JSONException {             //Update api call URL based on grams of food
-        System.out.println("createNewEmissionEntry");
         apiUrl = "https://ilmastodieetti.ymparisto.fi/ilmastodieetti/calculatorapi/v1/FoodCalculator?query.diet=omnivore";
         if(beefInGrams != 0){
             beefMultiplier = beefInGrams/(averageFinnishBeefGramsPerDay*2);            //This multiplier is a dirty workaround of the fact that Ilmastodieetti does not allow you to log more than  2x the average grams of food at one time.
@@ -193,8 +192,22 @@ public class UserData implements Serializable {
         System.out.println("PlantEmissions from API: "+emissionData.getPlantEmissions());
         // ##################################################
 
-            weekList.get(0).addEmissionData(emissionData,LocalDate.now());
 
+        if(weekList.size()==0){
+            weekList.add(0,new Week(LocalDate.now()));                                                                //If user has no weeks in log, add an empty week
+            weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());
+        }
+        else{
+            LocalDate current = weekList.get(weekList.size()-1).getWeekDate();
+            if(Period.between(LocalDate.now(),current).getDays() <= -7) {
+                weekList.add(weekList.size(),new Week(LocalDate.now()));                                                    //If previously logged week's monday is not current week's monday, add new week and add emission to that week
+                weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());
+
+            }
+            else {
+                weekList.get(weekList.size()-1).addEmissionData(emissionData,LocalDate.now());                                              //If previously logged week is current week, add emission data to that week
+            }
+            }
         return emissionData;
         }
 

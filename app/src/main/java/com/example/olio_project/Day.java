@@ -28,7 +28,6 @@ public class Day implements Serializable {
     }
 
     public double getDaysEmissions(){
-        System.out.println("getDaysEmissions");
         double dayEmissions = 0;
 
         for (int i = 0; i < entries.size(); i++) {
@@ -43,7 +42,6 @@ public class Day implements Serializable {
     }
 
     public void addDataEntryToDay(DataEntry newEntry){
-        System.out.println("addDataEntryToDay");
         entries.add(newEntry);
     }
 
