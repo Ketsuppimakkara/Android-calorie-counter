@@ -40,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwordField;
     Button newUserButton;
 
+    int fileInitialized = 0;
+
 
 
     @Override
@@ -52,7 +54,10 @@ public class LoginActivity extends AppCompatActivity {
         newUserButton = findViewById(R.id.createUser);
         //See if login file exists on the phone already, if not, create one. NullPointerException detects corrupted data and deletes the offending file
         try {
-            readFile();
+            if(fileInitialized == 0) {
+                readFile();
+                fileInitialized =1;
+            }
         }
         catch (NullPointerException e){
             deleteFile("users.txt");
@@ -70,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View v){
+        System.out.println("login");
         if(userList.size() == 0){
             System.out.println("Userlist size="+userList.size());
             Toast.makeText(context,"No users exist, create a new user!", Toast.LENGTH_SHORT).show();
@@ -79,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
             for (i = 0; i < userList.size(); i++) {
 
                 if(userList.get(i).userName.equals(usernameField.getText().toString()) == true && userList.get(i).password.equals(passwordField.getText().toString()) == true){
+                    writeUserListToFile(userList);
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("Index",i);
                     startActivity(intent);
@@ -98,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void addNewUser(View v){
+        System.out.println("addNewUser");
 
         if(usernameField.getText().length() != 0 && passwordField.getText().length() != 0) {                                    //Check if user has inputted anything into both fields
             User newUser = new User(usernameField.getText().toString(), passwordField.getText().toString());
@@ -119,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void readFile(){
+        System.out.println("readFile");
         try{
             FileInputStream fis = context.openFileInput("users.txt");
             boolean cont = true;
@@ -129,8 +138,6 @@ public class LoginActivity extends AppCompatActivity {
                     if (object != null) {
                         System.out.println("User found");
                         userList.add((User) object);
-                    } else {
-
                     }
                 }
                 catch (EOFException e){
@@ -165,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     public void writeUserListToFile(ArrayList<User> writeUsers) {
+        System.out.println("writeUserListToFile");
         try {
             FileOutputStream fos = getApplicationContext().openFileOutput("users.txt",Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
