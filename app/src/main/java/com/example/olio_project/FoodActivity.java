@@ -20,6 +20,9 @@ public class FoodActivity extends AppCompatActivity {
     //Egg   134kcal
     //salad 16kcal
     //restaurant
+
+    int userIndex;
+
     Button addBeef,addFish,addPork,addDairy,addCheese,addRice,addEgg,addSalad,addRestaurant,saveButton;
     EditText beefNumb,fishNumb,porkNumb,dairyNumb,cheeseNumb,riceNumb,eggNumb,saladNumb,restaurantNumb;
 
@@ -27,6 +30,11 @@ public class FoodActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
+
+        Intent inboundIntent = getIntent();
+        userIndex = inboundIntent.getIntExtra("Index",-1);
+        System.out.println("###USERINDEX in foodactivity:"+userIndex);
+
         addBeef = findViewById(R.id.addBeef);
         addFish = findViewById(R.id.addFish);
         addPork = findViewById(R.id.addPork);
@@ -91,6 +99,8 @@ public class FoodActivity extends AppCompatActivity {
 
 
                 Intent intent = new Intent(FoodActivity.this,MainActivity.class);
+
+                intent.putExtra("Index",userIndex);
 
                 intent.putExtra("beef",beef);
                 intent.putExtra("Fish",fish);

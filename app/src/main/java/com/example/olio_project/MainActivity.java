@@ -45,6 +45,7 @@ public class MainActivity extends LoginActivity {
     Context context = null;
     User user = null;
     TextView emissions;
+    int userIndex ;
 
     @RequiresApi(api = Build.VERSION_CODES.O)                                                       // updateEmissionUrl required newer api, check if this is problem
     @Override
@@ -61,23 +62,34 @@ public class MainActivity extends LoginActivity {
         // Intent comes from LoginActivity after successful login, includes index of current user from userList.
         Intent intent = getIntent();
         intent.getExtras();
-        if (intent.getExtras().containsKey("beef")){
-            System.out.println(intent.getIntExtra("beef",-1));
-        }else {
-
-            int userIndex = intent.getIntExtra("Index", 0);
-            user = userList.get(userIndex);
-            System.out.println("Got user data! User name:" + user.userName);
-            readWeekListFromFile();
-            System.out.println(user.userData.getWeekList().size());
             try {
-                printEmissionData();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
+
+                userIndex = intent.getIntExtra("Index", 0);
+                user = userList.get(userIndex);
+                System.out.println("Got user data! User name:" + user.userName);
+                readWeekListFromFile();
+                System.out.println(user.userData.getWeekList().size());
+                try {
+                    printEmissionData();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                }
+
+            readWeekListFromFile();
+            user.userData.createNewEmissionEntry(intent.getIntExtra("beef",0),intent.getIntExtra("Fish",0),intent.getIntExtra("Pork",0),intent.getIntExtra("Dairy",0),intent.getIntExtra("Cheese",0),intent.getIntExtra("Salad",0));
+            //user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).addDataEntryToDay(emissionData);
+            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString());//+" Total Emissions for new entry: "+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getPlantEmissions());
+            printEmissionData();
+            saveWeekListToFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+
     }
 
 
@@ -86,6 +98,8 @@ public class MainActivity extends LoginActivity {
     public void newEntry(View v){
         System.out.println("newEntry");
         Intent intent = new Intent(this, FoodActivity.class);
+        intent.putExtra("Index",userIndex);
+        System.out.println("###USERINDEX in mainactivity:"+userIndex);
         startActivity(intent);
 
         /*try {

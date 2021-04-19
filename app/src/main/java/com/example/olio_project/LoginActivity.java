@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(userList.get(i).userName.equals(usernameField.getText().toString()) == true && userList.get(i).password.equals(passwordField.getText().toString()) == true){
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("Index",i);
+                    System.out.println("###USERINDEX in loginactivity:"+i);
                     startActivity(intent);
                     break;
                 }
