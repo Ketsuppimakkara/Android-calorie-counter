@@ -42,7 +42,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends LoginActivity {
 
-    UserData userData;
     Context context = null;
     User user = null;
     TextView emissions;

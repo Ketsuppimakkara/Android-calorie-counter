@@ -40,13 +40,15 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwordField;
     Button newUserButton;
 
-    int fileInitialized = 0;
+    int fileInitialized;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.out.println("CREATED");
         setContentView(R.layout.activity_login);
 
         usernameField = findViewById(R.id.username);
@@ -54,14 +56,30 @@ public class LoginActivity extends AppCompatActivity {
         newUserButton = findViewById(R.id.createUser);
         //See if login file exists on the phone already, if not, create one. NullPointerException detects corrupted data and deletes the offending file
         try {
-            if(fileInitialized == 0) {
                 readFile();
-                fileInitialized =1;
-            }
+                System.out.println(userList.size());
         }
         catch (NullPointerException e){
             deleteFile("users.txt");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println("RESUMED");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("DESTROYED");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("PAUSED");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -85,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
             for (i = 0; i < userList.size(); i++) {
 
                 if(userList.get(i).userName.equals(usernameField.getText().toString()) == true && userList.get(i).password.equals(passwordField.getText().toString()) == true){
-                    writeUserListToFile(userList);
                     Intent intent = new Intent(this, MainActivity.class);
                     intent.putExtra("Index",i);
                     startActivity(intent);
@@ -124,10 +141,12 @@ public class LoginActivity extends AppCompatActivity {
             System.out.println("Username or password cannot be empty!");
             Toast.makeText(this,"Username or password cannot be empty!",Toast.LENGTH_SHORT).show();
         }
+        readFile();
     }
 
     public void readFile(){
         System.out.println("readFile");
+        if(userList.size() == 0){
         try{
             FileInputStream fis = context.openFileInput("users.txt");
             boolean cont = true;
@@ -170,6 +189,10 @@ public class LoginActivity extends AppCompatActivity {
             Log.e("IOException","Class not found");
         }
         }
+        else{
+        return;
+        }
+    }
 
     public void writeUserListToFile(ArrayList<User> writeUsers) {
         System.out.println("writeUserListToFile");
