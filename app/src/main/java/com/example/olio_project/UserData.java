@@ -184,10 +184,17 @@ public class UserData implements Serializable {
             dairyMultiplier = 1;
         }
 
+
         double dairyEmission = ((double) data.get("Dairy")-24.6281058495822)/365*dairyMultiplier;                                           // Extract floats from response. Subtract default values to only count emissions caused by food
         double meatEmission = (((double) data.get("Meat")-33.3533426183844)/365)*meatMultiplier;                            // These also divide the data by 365 since Ilmastodieetti returns emission data for the whole year instead of one day
         double plantEmission = ((double) data.get("Plant")-340.159042085224)/365;                                           // Meatmultiplier counts a weighted average of inputted meats and calculates a multiplier to estimate emissions
-        DataEntry emissionData = (new DataEntry(dairyEmission,meatEmission,plantEmission, LocalDateTime.now()));            // Create a new DataEntry with calculated emissionData.
+        System.out.println("#################################  #################################");
+
+        double meatCal = (beefInGrams/2.09)+(fishInGrams/1.27)+(porkPoultryInGrams/2.16);
+        double dairyCal = (dairyInGrams/0.97)+(cheeseInGrams/2.72);
+        double plantCal = (plantInGrams/0.16);
+
+        DataEntry emissionData = (new DataEntry(dairyEmission,meatEmission,plantEmission,meatCal,dairyCal,plantCal,LocalDateTime.now()));            // Create a new DataEntry with calculated emissionData.
         System.out.println("MeatEmissions from API: "+emissionData.getMeatEmissions());
         System.out.println("DairyEmissions from API: "+emissionData.getDairyEmissions());
         System.out.println("PlantEmissions from API: "+emissionData.getPlantEmissions());

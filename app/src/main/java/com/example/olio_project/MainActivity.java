@@ -45,6 +45,7 @@ public class MainActivity extends LoginActivity {
     Context context = null;
     User user = null;
     TextView emissions;
+    TextView weekCalories;
     int userIndex ;
 
     @RequiresApi(api = Build.VERSION_CODES.O)                                                       // updateEmissionUrl required newer api, check if this is problem
@@ -59,6 +60,7 @@ public class MainActivity extends LoginActivity {
         context = MainActivity.this;
         // Program
         emissions = findViewById(R.id.emission);
+        weekCalories = findViewById(R.id.weekleyCalorieCount);
         // Intent comes from LoginActivity after successful login, includes index of current user from userList.
         Intent intent = getIntent();
         intent.getExtras();
@@ -71,6 +73,7 @@ public class MainActivity extends LoginActivity {
                 System.out.println(user.userData.getWeekList().size());
                 try {
                     printEmissionData();
+                    printCalorieData();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (IOException exception) {
@@ -82,6 +85,7 @@ public class MainActivity extends LoginActivity {
             //user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).addDataEntryToDay(emissionData);
             System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString());//+" Total Emissions for new entry: "+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getPlantEmissions());
             printEmissionData();
+                printCalorieData();
             saveWeekListToFile();
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,6 +118,23 @@ public class MainActivity extends LoginActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }*/
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void printCalorieData() throws IOException, JSONException {
+        System.out.println("printCalorieData");
+        int thisWeeksCalories = 0;
+
+        if(user.userData.getWeekList().size()==0){
+            emissions.setText("0 kg/CO2");
+        }
+        else {
+            for (int i = 0; i < 7; i++) {
+                thisWeeksCalories = thisWeeksCalories + (user.userData.getWeekList().get(0).getDay(i).getDaysCalories());
+                System.out.println("Week's total Calories are thus far: " + thisWeeksCalories);
+            }
+            weekCalories.setText(String.format("%d",thisWeeksCalories) + " Kcal");
+        }
     }
 
 
