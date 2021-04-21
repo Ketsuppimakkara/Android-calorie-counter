@@ -59,7 +59,6 @@ public class GraphActivity extends AppCompatActivity {
         friCal = (int)week.getDay(4).getDaysCalories();
         satCal = (int)week.getDay(5).getDaysCalories();
         sunCal = (int)week.getDay(6).getDaysCalories();
-
         monEmi = week.getDay(0).getDaysEmissions()*1000;
         tueEmi = week.getDay(1).getDaysEmissions()*1000;
         wedEmi = week.getDay(2).getDaysEmissions()*1000;
