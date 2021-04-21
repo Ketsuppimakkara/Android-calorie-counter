@@ -157,6 +157,13 @@ public class MainActivity extends LoginActivity {
         }
     }
 
+    public void goToGraph(View v){
+        Intent graphIntent = new Intent(this,GraphActivity.class);
+        graphIntent.putExtra("currentWeek",user.userData.getWeekList().get(0));
+        graphIntent.putExtra("Index", userIndex);
+        startActivity(graphIntent);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void printEmissionData() throws IOException, JSONException {
         System.out.println("printEmissionData");
