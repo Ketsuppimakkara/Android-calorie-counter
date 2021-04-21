@@ -5,13 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.renderscript.Sampler;
 import android.view.View;
 import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
@@ -45,9 +49,6 @@ public class GraphActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
-        calorieButton = findViewById(R.id.calorieButton);
-        emissionButton = findViewById(R.id.emissionButton);
-
         Intent intent = getIntent();
         Week week = (Week)intent.getExtras().get("currentWeek");
         userIndex = (int)intent.getExtras().get("Index");
@@ -68,12 +69,24 @@ public class GraphActivity extends AppCompatActivity {
         satEmi = week.getDay(5).getDaysEmissions()*1000;
         sunEmi = week.getDay(6).getDaysEmissions()*1000;
 
+        ArrayList<String> xAxisLabel = new ArrayList<>();
+        xAxisLabel.add("Monday");
+        xAxisLabel.add("Tuesday");
+        xAxisLabel.add("Wednesday");
+        xAxisLabel.add("Thursday");
+        xAxisLabel.add("Friday");
+        xAxisLabel.add("Saturday");
+        xAxisLabel.add("Sunday");
+
         mChart = (LineChart) findViewById(R.id.Linechart);
         //   mChart.setOnChartGestureListener(MainActivity.this);
         //   mChart.setOnChartValueSelectedListener(MainActivity.this);
 
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(false);
+
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setDrawLabels(false);
 
         System.out.println(monCal+" | "+tueCal+" | "+wedCal+" | "+thurCal+" | "+friCal+" | "+satCal+" | "+sunCal);
 
@@ -105,9 +118,13 @@ public class GraphActivity extends AppCompatActivity {
 
         set1.setFillAlpha(110);
         set1.setColor(Color.RED);
+        set1.setValueTextSize(20);
+        set1.setCircleRadius(6);
 
         set2.setFillAlpha(110);
         set2.setColor(Color.BLUE);
+        set2.setValueTextSize(20);
+        set1.setCircleRadius(6);
 
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(set1);

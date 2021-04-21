@@ -129,6 +129,7 @@ public class MainActivity extends LoginActivity {
             calories.setText("0 kCal");
         }
         else {
+            //comment
             for (int i = 0; i < 7; i++) {
                 thisWeeksCalories = thisWeeksCalories + (user.userData.getWeekList().get(0).getDay(i).getDaysCalories());
                 System.out.println("Week's total calories are thus far: " + thisWeeksCalories);
