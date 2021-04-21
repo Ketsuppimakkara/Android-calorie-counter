@@ -45,7 +45,8 @@ public class MainActivity extends LoginActivity {
     Context context = null;
     User user = null;
     TextView emissions;
-    TextView weekCalories;
+    TextView calories;
+    TextView dayCalories;
     int userIndex ;
 
     @RequiresApi(api = Build.VERSION_CODES.O)                                                       // updateEmissionUrl required newer api, check if this is problem
@@ -60,7 +61,8 @@ public class MainActivity extends LoginActivity {
         context = MainActivity.this;
         // Program
         emissions = findViewById(R.id.emission);
-        weekCalories = findViewById(R.id.weekleyCalorieCount);
+        calories = findViewById(R.id.weekleyCalorieCount);
+        dayCalories = findViewById(R.id.dailyCalorieCount);
         // Intent comes from LoginActivity after successful login, includes index of current user from userList.
         Intent intent = getIntent();
         intent.getExtras();
@@ -73,7 +75,6 @@ public class MainActivity extends LoginActivity {
                 System.out.println(user.userData.getWeekList().size());
                 try {
                     printEmissionData();
-                    printCalorieData();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } catch (IOException exception) {
@@ -81,11 +82,11 @@ public class MainActivity extends LoginActivity {
                 }
 
             readWeekListFromFile();
-            user.userData.createNewEmissionEntry(intent.getIntExtra("beef",0),intent.getIntExtra("Fish",0),intent.getIntExtra("Pork",0),intent.getIntExtra("Dairy",0),intent.getIntExtra("Cheese",0),intent.getIntExtra("Salad",0));
+            user.userData.createNewEmissionEntry(intent.getIntExtra("beef",0),intent.getIntExtra("Fish",0),intent.getIntExtra("Pork",0),intent.getIntExtra("Dairy",0),intent.getIntExtra("Cheese",0),intent.getIntExtra("Salad",0),LocalDateTime.now());
             //user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).addDataEntryToDay(emissionData);
-            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString());//+" Total Emissions for new entry: "+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getPlantEmissions());
             printEmissionData();
-                printCalorieData();
+            printCalorieData();
+            printDayCalorieData(LocalDate.now());
             saveWeekListToFile();
         } catch (IOException e) {
             e.printStackTrace();
@@ -119,24 +120,42 @@ public class MainActivity extends LoginActivity {
             e.printStackTrace();
         }*/
     }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void printCalorieData() throws IOException, JSONException {
-        System.out.println("printCalorieData");
-        int thisWeeksCalories = 0;
+        System.out.println("printEmissionData");
+        double thisWeeksCalories = 0;
 
         if(user.userData.getWeekList().size()==0){
-            emissions.setText("0 kg/CO2");
+            calories.setText("0 kCal");
         }
         else {
             for (int i = 0; i < 7; i++) {
                 thisWeeksCalories = thisWeeksCalories + (user.userData.getWeekList().get(0).getDay(i).getDaysCalories());
-                System.out.println("Week's total Calories are thus far: " + thisWeeksCalories);
+                System.out.println("Week's total calories are thus far: " + thisWeeksCalories);
             }
-            weekCalories.setText(String.format("%d",thisWeeksCalories) + " Kcal");
+            calories.setText((int)(thisWeeksCalories) + " kCal");
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void printDayCalorieData(LocalDate date) throws IOException, JSONException {
+        System.out.println("printDayCalorieData");
+
+        if(user.userData.getWeekList().size()==0){
+            calories.setText("0 kCal");
+        }
+        else {
+                for (int j = 0; j < 7; j++) {
+                    if(user.userData.getWeekList().get(0).getDay(j).getDate().equals(date)) {
+                        double calories = user.userData.getWeekList().get(0).getDay(j).getDaysCalories();
+                        System.out.println(calories);
+                        int daysCalories = (int)calories;
+                        dayCalories.setText(Integer.toString(daysCalories)+" kCal");
+                        break;
+                    }
+                }
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void printEmissionData() throws IOException, JSONException {
@@ -170,7 +189,9 @@ public class MainActivity extends LoginActivity {
                     fis.close();
 
                     LocalDate thisWeek = getWeeksMonday(LocalDate.now());
+                    System.out.println("#################### ThisWeek "+thisWeek);
                     if(user.userData.getWeekList().size()!=0) {
+                        System.out.println("#################### Compare these "+thisWeek+"###################"+user.userData.getWeekList().get(0).getWeekDate());
                         if (user.userData.getWeekList().get(0).getWeekDate().equals(thisWeek) == false) {
                             user.userData.getWeekList().add(0, new Week(LocalDate.now()));
                             System.out.println("This week not found in weeklist, adding it now.");
@@ -235,7 +256,8 @@ public class MainActivity extends LoginActivity {
     public LocalDate getWeeksMonday(LocalDate date){
         System.out.println("getWeeksMonday");
         for (int i = 0; i < 7 && date.getDayOfWeek().toString() != "MONDAY"; i++) {
-            date = date.minusDays(i);
+            System.out.println("############## dates"+date.getDayOfWeek().toString());
+            date = date.minusDays(1);
         }
         return date;
     }

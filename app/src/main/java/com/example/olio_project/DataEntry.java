@@ -7,21 +7,21 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class DataEntry implements Serializable {
-    private double dairyEmissions;
-    private double meatEmissions;
-    private double plantEmissions;
+    private double dairyEmissions = 0;
+    private double meatEmissions = 0;
+    private double plantEmissions = 0;
 
-    private double dairyCalories;
-    private double meatCalories;
-    private double plantCalories;
+    double dairyCalories = 0;
+    double meatCalories = 0;
+    double plantCalories = 0;
 
 
     private LocalDateTime entryDate;
 
-    public DataEntry(double dairyCo2, double meatCo2, double plantCo2, double meatCal, double dairyCal, double plantCal, LocalDateTime date){
-        dairyEmissions = dairyCo2;
-        meatEmissions = meatCo2;
-        plantEmissions = plantCo2;
+    public DataEntry(double dairy, double meat, double plant, double dairyCal, double meatCal, double plantCal, LocalDateTime date){
+        dairyEmissions = dairy;
+        meatEmissions = meat;
+        plantEmissions = plant;
         dairyCalories = dairyCal;
         meatCalories = meatCal;
         plantCalories = plantCal;
@@ -41,15 +41,9 @@ public class DataEntry implements Serializable {
         return plantEmissions;
     }
 
-    public double getMeatCalories() {
-        return meatCalories;
-    }
-    public double getDairyCalories(){
-        return dairyCalories;
-    }
-    public double getPlantCalories() {
-        return plantCalories;
-    }
+    public double getMeatCalories(){return meatCalories;}
+    public double getDairyCalories(){return dairyCalories;}
+    public double getPlantCalories(){return plantCalories;}
 
     public void setMeatEmissions(float emissions){
         meatEmissions = emissions;

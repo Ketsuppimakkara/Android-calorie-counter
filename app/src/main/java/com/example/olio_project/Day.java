@@ -23,25 +23,28 @@ public class Day implements Serializable {
         entries = new ArrayList<DataEntry>();
     }
 
+    public LocalDate getDate(){
+        return date;
+    }
+
     public ArrayList<DataEntry> getEntries(){
         return entries;
     }
 
-    public int getDaysCalories(){
+    public double getDaysCalories(){
         System.out.println("getDaysCalories");
-        int dayCalories = 0;
+        double dayCalories = 0;
 
         for (int i = 0; i < entries.size(); i++) {
             System.out.println((i+1)+". MeatCalories: "+entries.get(i).getMeatCalories());
             System.out.println((i+1)+". DairyCalories: "+entries.get(i).getDairyCalories());
             System.out.println((i+1)+". PlantCalories: "+entries.get(i).getPlantCalories());
-            dayCalories = (int)(dayCalories+((entries.get(i).getMeatCalories())+(entries.get(i).getPlantCalories())+(entries.get(i).getDairyCalories())));
+            dayCalories = (dayCalories+((entries.get(i).getMeatCalories())+(entries.get(i).getPlantCalories())+(entries.get(i).getDairyCalories())));
             System.out.println((i+1)+". Total Calories: "+dayCalories);
         }
 
         return dayCalories;
     }
-
     public double getDaysEmissions(){
         System.out.println("getDaysEmissions");
         double dayEmissions = 0;

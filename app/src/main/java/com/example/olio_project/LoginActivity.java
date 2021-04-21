@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public LocalDate getThisWeeksMonday(){
         LocalDate thisWeeksMonday = LocalDate.now();
