@@ -1,5 +1,9 @@
 package com.example.olio_project;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -7,6 +11,7 @@ public class User implements Serializable {
     String userName;
     String password;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public User(String name, String pw){
         userData = new UserData();
         userName = name;

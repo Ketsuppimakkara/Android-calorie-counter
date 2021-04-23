@@ -78,8 +78,6 @@ public class GraphActivity extends AppCompatActivity {
         xAxisLabel.add("Sunday");
 
         mChart = (LineChart) findViewById(R.id.Linechart);
-        //   mChart.setOnChartGestureListener(MainActivity.this);
-        //   mChart.setOnChartValueSelectedListener(MainActivity.this);
 
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(false);

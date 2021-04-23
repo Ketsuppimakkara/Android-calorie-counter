@@ -2,9 +2,11 @@ package com.example.olio_project;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.RequiresApi;
 import androidx.loader.content.Loader;
 
 import java.io.BufferedReader;
@@ -26,10 +28,12 @@ public class UserList extends LoginActivity implements Serializable {
     Context context = this;
     private ArrayList<User> userList = new ArrayList<User>();
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void getUserListFromFile(){
             readFile();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void readFile(){
         try{
             FileInputStream fis = context.openFileInput("users.txt");

@@ -107,18 +107,6 @@ public class MainActivity extends LoginActivity {
         System.out.println("###USERINDEX in mainactivity:"+userIndex);
         startActivity(intent);
 
-        /*try {
-            readWeekListFromFile();
-            user.userData.createNewEmissionEntry(1000,200,3000,5000,600,5000);
-            //user.userData.getWeekList().get(user.userData.getCurrentWeekIndex()).getDay(LocalDate.now().getDayOfWeek().getValue()).addDataEntryToDay(emissionData);
-            System.out.println("New data added! Week starting at:"+user.userData.getWeekList().get(0).getWeekDate().toString());//+" Total Emissions for new entry: "+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getMeatEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getDairyEmissions()+user.userData.getWeekList().get(0).getDay(LocalDate.now().getDayOfWeek().getValue()-1).getEntries().get(0).getPlantEmissions());
-            printEmissionData();
-            saveWeekListToFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void printCalorieData() throws IOException, JSONException {
@@ -272,4 +260,3 @@ public class MainActivity extends LoginActivity {
 
 }
 
-// Tommi push

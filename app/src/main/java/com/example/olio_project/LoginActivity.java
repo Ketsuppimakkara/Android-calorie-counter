@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void addNewUser(View v){
 
         if(usernameField.getText().length() != 0 && passwordField.getText().length() != 0) {                                    //Check if user has inputted anything into both fields
@@ -120,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void readFile(){
         try{
             FileInputStream fis = context.openFileInput("users.txt");
