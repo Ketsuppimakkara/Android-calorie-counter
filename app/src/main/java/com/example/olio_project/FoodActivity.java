@@ -10,21 +10,11 @@ import android.widget.EditText;
 
 public class FoodActivity extends AppCompatActivity {
 
-    //Calories/100g
-    //Beef 209kcal
-    //Fish 127kcal
-    //Pork  216kcal
-    //dairy 97kcal
-    //Cheese    272kcal
-    //Rice  348kcal
-    //Egg   134kcal
-    //salad 16kcal
-    //restaurant
 
     int userIndex;
 
-    Button addBeef,addFish,addPork,addDairy,addCheese,addRice,addEgg,addSalad,addRestaurant,saveButton;
-    EditText beefNumb,fishNumb,porkNumb,dairyNumb,cheeseNumb,riceNumb,eggNumb,saladNumb,restaurantNumb;
+    Button saveButton;
+    EditText beefNumb,fishNumb,porkNumb,dairyNumb,cheeseNumb,saladNumb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

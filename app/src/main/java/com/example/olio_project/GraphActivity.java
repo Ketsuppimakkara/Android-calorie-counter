@@ -23,8 +23,7 @@ import java.util.ArrayList;
 public class GraphActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    Button calorieButton;
-    Button emissionButton;
+
     int userIndex;
     private LineChart mChart;
 
