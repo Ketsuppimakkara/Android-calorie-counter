@@ -1,5 +1,6 @@
 package com.example.olio_project;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,14 +31,26 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
     Context context = this;
     ArrayList<User> userList = new ArrayList<User>();
 
+
+
+    Pattern hasSmallLetters = Pattern.compile("[a-z]");
+    Pattern hasCapitalLetters = Pattern.compile("[a-z]");
+    Pattern hasNumber = Pattern.compile("[0-9]");
+    Pattern hasSpecial = Pattern.compile ("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
+
+
+
     EditText usernameField;
     EditText passwordField;
+    TextView errorMsg;
     Button newUserButton;
 
 
@@ -51,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         usernameField = findViewById(R.id.username);
         passwordField = findViewById(R.id.password);
         newUserButton = findViewById(R.id.createUser);
+        errorMsg = findViewById(R.id.errorMsg);
         //See if login file exists on the phone already, if not, create one. NullPointerException detects corrupted data and deletes the offending file
         try {
             readFile();
@@ -95,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             if(userList.size() == i){
                 Toast.makeText(context,"Username or password is incorrect.", Toast.LENGTH_SHORT).show();
+                errorMsg.setText("");
             }
 
         }
@@ -112,9 +127,26 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
             }
-            userList.add(newUser);
-            writeUserListToFile(userList);
-            Toast.makeText(this,"New user added!",Toast.LENGTH_SHORT).show();
+
+            Matcher smallLetterMatcher = hasSmallLetters.matcher(passwordField.getText().toString());
+            Matcher capitalLetterMatcher = hasCapitalLetters.matcher(passwordField.getText().toString());
+            Matcher numberMatcher = hasNumber.matcher(passwordField.getText().toString());
+            Matcher specialMatcher = hasSpecial.matcher(passwordField.getText().toString());
+            boolean smallLetters = smallLetterMatcher.find();
+            boolean capitalLetters = capitalLetterMatcher.find();
+            boolean numbers = numberMatcher.find();
+            boolean specials = specialMatcher.find();
+
+            if(smallLetters == true && capitalLetters == true && numbers == true && specials == true && passwordField.getText().toString().length() >= 12) {
+                userList.add(newUser);
+                writeUserListToFile(userList);
+                Toast.makeText(this, "New user added!", Toast.LENGTH_SHORT).show();
+                errorMsg.setText("");
+            }
+            else{
+                errorMsg.setText("Password needs to have one small letter, one capital letter, one digit, one special character and be 12 characters long!");
+                return;
+            }
         }
         else{
             System.out.println("Username or password cannot be empty!");
